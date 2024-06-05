@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book API</title>
+</head>
+
+<body>
+  <h1>Welcome to the Book API</h1>
+  <p>Here are the available endpoints:</p>
+  <ul>
+    <li><button onclick="getAllBooks()">GET /books - Retrieve all books</button></li>
+    <li>
+      <form id="getBookForm" onsubmit="getBookById(event)">
+        <input type="number" id="getBookId" placeholder="Book ID" required>
+        <button type="submit">GET /books/:id - Retrieve a single book by ID</button>
+      </form>
+    </li>
+    <li>
+      <form id="postBookForm" onsubmit="createBook(event)">
+        <input type="text" id="postBookTitle" placeholder="Title" required>
+        <input type="text" id="postBookAuthor" placeholder="Author" required>
+        <button type="submit">POST /books - Create a new book</button>
+      </form>
+    </li>
+    <li>
+      <form id="putBookForm" onsubmit="updateBook(event)">
+        <input type="number" id="putBookId" placeholder="Book ID" required>
+        <input type="text" id="putBookTitle" placeholder="Title" required>
+        <input type="text" id="putBookAuthor" placeholder="Author" required>
+        <button type="submit">PUT /books/:id - Update a book by ID</button>
+      </form>
+    </li>
+    <li>
+      <form id="deleteBookForm" onsubmit="deleteBook(event)">
+        <input type="number" id="deleteBookId" placeholder="Book ID" required>
+        <button type="submit">DELETE /books/:id - Delete a book by ID</button>
+      </form>
+    </li>
+  </ul>
+  <pre id="responseOutput"></pre>
+  <script>
+    async function getAllBooks() {
+      const response = await fetch('/books');
+      const data = await response.json();
+      document.getElementById('responseOutput').textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function getBookById(event) {
+      event.preventDefault();
+      const bookId = document.getElementById('getBookId').value;
+      const response = await fetch(`/books/${bookId}`);
+      const data = await response.json();
+      document.getElementById('responseOutput').textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function createBook(event) {
+      event.preventDefault();
+      const title = document.getElementById('postBookTitle').value;
+      const author = document.getElementById('postBookAuthor').value;
+      const response = await fetch('/books', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ title, author })
+      });
+      const data = await response.json();
+      document.getElementById('responseOutput').textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function updateBook(event) {
+      event.preventDefault();
+      const bookId = document.getElementById('putBookId').value;
+      const title = document.getElementById('putBookTitle').value;
+      const author = document.getElementById('putBookAuthor').value;
+      const response = await fetch(`/books/${bookId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ title, author })
+      });
+      const data = await response.json();
+      document.getElementById('responseOutput').textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function deleteBook(event) {
+      event.preventDefault();
+      const bookId = document.getElementById('deleteBookId').value;
+      const response = await fetch(`/books/${bookId}`, {
+        method: 'DELETE'
+      });
+      const data = await response.json();
+      document.getElementById('responseOutput').textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+
+</html>
